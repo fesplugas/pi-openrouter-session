@@ -36,7 +36,7 @@ pi install npm:pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install npm:pi-openrouter-session@1.0.0
+pi install npm:pi-openrouter-session@0.0.3
 ```
 
 ### Method 2: Install from GitHub
@@ -48,7 +48,7 @@ pi install git:github.com/odonnell-anthony/pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install git:github.com/odonnell-anthony/pi-openrouter-session@v1.0.0
+pi install git:github.com/odonnell-anthony/pi-openrouter-session@v0.0.3
 ```
 
 ### Method 3: Local Install (Development)
