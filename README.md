@@ -31,10 +31,10 @@ This extension automatically:
 pi install git:github.com/odonnell-anthony/pi-openrouter-session
 ```
 
-To install a specific version (if you've tagged releases):
+To install a specific version:
 
 ```bash
-pi install git:github.com/odonnell-anthony/pi-openrouter-session@v1.0.0
+pi install git:github.com/odonnell-anthony/pi-openrouter-session@v0.0.1
 ```
 
 ### Method 2: Local Install (Development)
