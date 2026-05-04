@@ -36,7 +36,7 @@ pi install npm:pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install npm:pi-openrouter-session@0.0.3
+pi install npm:pi-openrouter-session@1.0.0
 ```
 
 ### Method 2: Install from GitHub
@@ -48,7 +48,7 @@ pi install git:github.com/odonnell-anthony/pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install git:github.com/odonnell-anthony/pi-openrouter-session@v0.0.3
+pi install git:github.com/odonnell-anthony/pi-openrouter-session@1.0.0
 ```
 
 ### Method 3: Local Install (Development)
@@ -152,16 +152,6 @@ Request sent to OpenRouter with session tracking
 
 Currently, the extension works automatically with no configuration required.
 
-### Advanced: Custom Session ID (Future Enhancement)
-
-If you want to set a custom session ID, you could modify the extension to read from an environment variable:
-
-```bash
-export PI_OPENROUTER_SESSION_ID="my-custom-session"
-```
-
-Then modify `openrouter-session.ts` to check for this variable.
-
 ## Troubleshooting
 
 ### Extension Not Loading
@@ -208,47 +198,11 @@ pi-openrouter-session/
     └── openrouter-session.ts  # The extension code
 ```
 
-## Development
-
-To modify the extension:
-
-1. Clone the repo:
-   ```bash
-   git clone git@github.com:odonnell-anthony/pi-openrouter-session.git
-   cd pi-openrouter-session
-   ```
-
-2. Make your changes to `extensions/openrouter-session.ts`
-
-3. Test locally:
-   ```bash
-   pi install /path/to/pi-openrouter-session
-   ```
-
-4. Reload in pi: `/reload`
-
-5. Push changes:
-   ```bash
-   git add .
-   git commit -m "Your changes"
-   git push origin main
-   ```
-
 ## Limitations
 
 - **Ephemeral Sessions**: Sessions started with `--no-session` get a random ID that can't be recovered
 - **Session File Dependent**: The session ID is derived from the pi session file name. If you delete/rename the file, the ID changes
 - **OpenRouter Only**: This only works with the OpenRouter provider
-
-## Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
