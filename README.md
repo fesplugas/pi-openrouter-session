@@ -11,6 +11,8 @@ This extension automatically:
 - Injects the `session_id` field into every OpenRouter API request
 - Allows you to view conversation threads in the OpenRouter console
 
+![OpenRouter screenshot](screenshot.png)
+
 ## Why Use This?
 
 - **Conversation Tracking**: View your pi sessions as grouped conversations in OpenRouter's dashboard
