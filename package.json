@@ -1,0 +1,10 @@
+{
+  "name": "pi-openrouter-session",
+  "version": "1.0.0",
+  "description": "OpenRouter session tracking for pi - adds session_id to API requests for OpenRouter console visibility",
+  "keywords": ["pi-package"],
+  "license": "MIT",
+  "pi": {
+    "extensions": ["./extensions"]
+  }
+}
