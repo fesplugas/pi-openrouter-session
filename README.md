@@ -25,7 +25,19 @@ This extension automatically:
 - [pi](https://pi.dev) installed (`npm install -g @mariozechner/pi-coding-agent`)
 - An [OpenRouter API key](https://openrouter.ai/keys)
 
-### Method 1: Install from GitHub (Recommended)
+### Method 1: Install from npm (Recommended)
+
+```bash
+pi install npm:pi-openrouter-session
+```
+
+To install a specific version:
+
+```bash
+pi install npm:pi-openrouter-session@1.0.0
+```
+
+### Method 2: Install from GitHub
 
 ```bash
 pi install git:github.com/odonnell-anthony/pi-openrouter-session
@@ -34,22 +46,22 @@ pi install git:github.com/odonnell-anthony/pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install git:github.com/odonnell-anthony/pi-openrouter-session@v0.0.1
+pi install git:github.com/odonnell-anthony/pi-openrouter-session@v1.0.0
 ```
 
-### Method 2: Local Install (Development)
+### Method 3: Local Install (Development)
 
 ```bash
 git clone git@github.com:odonnell-anthony/pi-openrouter-session.git
 pi install /path/to/pi-openrouter-session
 ```
 
-### Method 3: Project-Local Install
+### Method 4: Project-Local Install
 
 To share the extension with your team via project settings:
 
 ```bash
-pi install -l git:github.com/odonnell-anthony/pi-openrouter-session
+pi install -l npm:pi-openrouter-session
 ```
 
 This writes to `.pi/settings.json` instead of your global settings.
@@ -156,7 +168,7 @@ Then modify `openrouter-session.ts` to check for this variable.
    ```bash
    pi list
    ```
-   Should show `git:github.com/odonnell-anthony/pi-openrouter-session`
+   Should show `npm:pi-openrouter-session` (or `git:github.com/odonnell-anthony/pi-openrouter-session` if installed from GitHub)
 
 2. Reload extensions in pi:
    ```
