@@ -115,9 +115,14 @@ When you start pi, you should see:
 [openrouter-session] Ready, base session ID: 2026-05-06T12-00-00-000Z_019dbbc7-...
 ```
 
-On your first OpenRouter request:
+On your first OpenRouter request (unnamed session):
 ```
-[openrouter-session] Using session_id: 019dbbc7
+[openrouter-session] Using session_id: 2026-05-06T12-00-00-000Z_019dbbc7-...
+```
+
+Or if you've named the session with `/name just testing`:
+```
+[openrouter-session] Using session_id: just-testing-019dbbc7
 ```
 
 Or check for the notification: "OpenRouter session tracking enabled"
