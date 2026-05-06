@@ -7,9 +7,19 @@ A pi extension that automatically adds `session_id` to OpenRouter API requests, 
 When using pi with OpenRouter as your LLM provider, each request is typically treated as an isolated interaction. OpenRouter supports a `session_id` field in the request body that groups related requests together in their console/dashboard.
 
 This extension automatically:
-- Captures your pi session ID (from the session file name)
+- Captures your pi session name (set via `/name <name>`) and combines it with a short unique identifier for human-readable grouping
+- Falls back to the raw session file identifier when no name is set
 - Injects the `session_id` field into every OpenRouter API request
+- Re-resolves the session name on every request, so renaming mid-session takes effect immediately
 - Allows you to view conversation threads in the OpenRouter console
+
+### Session ID format
+
+| Scenario | Example `session_id` |
+|---|---|
+| Named session (`/name Refactor auth`) | `refactor-auth-019dbbc7` |
+| Unnamed session | `2026-05-06T12-00-00-000Z_019dbbc7-...` (filename) |
+| Ephemeral (`--no-session`) | `ephemeral-1234567890-abc123` |
 
 ![OpenRouter screenshot](screenshot.png)
 
@@ -36,7 +46,7 @@ pi install npm:pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install npm:pi-openrouter-session@1.0.0
+pi install npm:pi-openrouter-session@1.1.0
 ```
 
 ### Method 2: Install from GitHub
@@ -48,7 +58,7 @@ pi install git:github.com/odonnell-anthony/pi-openrouter-session
 To install a specific version:
 
 ```bash
-pi install git:github.com/odonnell-anthony/pi-openrouter-session@1.0.0
+pi install git:github.com/odonnell-anthony/pi-openrouter-session@1.1.0
 ```
 
 ### Method 3: Local Install (Development)
@@ -102,7 +112,12 @@ Or select OpenRouter interactively:
 
 When you start pi, you should see:
 ```
-[openrouter-session] Using session_id: abc123def456
+[openrouter-session] Ready, base session ID: 2026-05-06T12-00-00-000Z_019dbbc7-...
+```
+
+On your first OpenRouter request:
+```
+[openrouter-session] Using session_id: 019dbbc7
 ```
 
 Or check for the notification: "OpenRouter session tracking enabled"
@@ -119,20 +134,24 @@ Or check for the notification: "OpenRouter session tracking enabled"
 
 The extension uses pi's extension API to:
 
-1. **Capture Session ID** (`session_start` event):
-   - Extracts the session identifier from the pi session file (e.g., `abc123.jsonl` → `abc123`)
+1. **Establish base ID** (`session_start` event):
+   - Extracts the full filename (without `.jsonl`) as the stable base ID
+   - Pi session filenames have the format `<ISO-timestamp>_<uuid>` (e.g. `2026-05-06T12-00-00-000Z_019dbbc7-c8c5-748c-8710-3fdf6fefc083`)
    - Falls back to generating a random ID for ephemeral sessions (`--no-session`)
 
 2. **Intercept API Requests** (`before_provider_request` event):
    - Detects OpenRouter requests by checking:
      - Model string contains `openrouter/`
      - Current model's provider is `openrouter`
+   - Resolves the session name via `pi.getSessionName()` on **every request** so `/name` changes are picked up immediately
+   - If named: splits the base ID on `_`, takes the UUID half, strips hyphens, and uses the first 8 chars as a short suffix — e.g. `just-testing-019dbbc7`
+   - If unnamed: uses the full raw base ID
    - Adds `session_id` to the request payload body
 
 3. **Lifecycle Management**:
-   - Session ID persists for the entire pi session
-   - New session → new OpenRouter `session_id`
-   - Fork/clone/create new session → new `session_id`
+   - Base ID is stable for the entire pi session
+   - New session / fork / clone → new base ID, new `session_id`
+   - Renaming via `/name` mid-session → next request picks up the new name automatically
 
 ### Request Flow
 
@@ -169,6 +188,10 @@ Currently, the extension works automatically with no configuration required.
 
 3. Check the logs for:
    ```
+   [openrouter-session] Ready, base session ID: ...
+   ```
+   And on the first OpenRouter request:
+   ```
    [openrouter-session] Using session_id: ...
    ```
 
@@ -198,11 +221,24 @@ pi-openrouter-session/
     └── openrouter-session.ts  # The extension code
 ```
 
+## Naming Your Sessions
+
+Use pi's `/name` command to give your sessions meaningful names:
+
+```
+/name Refactor auth module
+```
+
+Once named, subsequent OpenRouter requests will use `refactor-auth-module-<id>` as the `session_id`, making it easy to find your sessions in the OpenRouter console.
+
+You can rename at any point in the session — the next API request will use the updated name.
+
 ## Limitations
 
 - **Ephemeral Sessions**: Sessions started with `--no-session` get a random ID that can't be recovered
-- **Session File Dependent**: The session ID is derived from the pi session file name. If you delete/rename the file, the ID changes
+- **Session File Dependent**: The base ID is derived from the pi session file name. If you delete/rename the file, the ID changes
 - **OpenRouter Only**: This only works with the OpenRouter provider
+- **Name length**: Session name slugs are capped at 50 characters to keep IDs readable
 
 ## License
 
