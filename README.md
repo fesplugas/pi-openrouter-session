@@ -18,7 +18,7 @@ This extension automatically:
 | Scenario | Example `session_id` |
 |---|---|
 | Named session (`/name Refactor auth`) | `refactor-auth-019dbbc7` |
-| Unnamed session | `2026-05-06T12-00-00-000Z_019dbbc7-...` (filename) |
+| Unnamed session | `019dbbc7-...` (filename) |
 | Ephemeral (`--no-session`) | `ephemeral-1234567890-abc123` |
 
 ![OpenRouter screenshot](screenshot.png)
@@ -112,12 +112,12 @@ Or select OpenRouter interactively:
 
 When you start pi, you should see:
 ```
-[openrouter-session] Ready, base session ID: 2026-05-06T12-00-00-000Z_019dbbc7-...
+[openrouter-session] Ready, base session ID: 019dbbc7-...
 ```
 
 On your first OpenRouter request (unnamed session):
 ```
-[openrouter-session] Using session_id: 2026-05-06T12-00-00-000Z_019dbbc7-...
+[openrouter-session] Using session_id: 019dbbc7-...
 ```
 
 Or if you've named the session with `/name just testing`:

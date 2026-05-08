@@ -14,7 +14,7 @@
  *
  * Examples:
  *   /name Refactor auth module  →  session_id: "refactor-auth-module-019dbbc7"
- *   (no name set)               →  session_id: "2026-05-06T12-00-00-000Z_019dbbc7-..."
+ *   (no name set)               →  session_id: "019dbbc7-c8c5-748c-8710-3fdf6fefc083"
  *   --no-session                →  session_id: "ephemeral-1234567890-abc123"
  *
  * Installation:
@@ -50,26 +50,33 @@ export default function (pi: ExtensionAPI) {
 
   /**
    * Builds the session_id to send to OpenRouter.
-   * If the user has named the session, produces "<slug>-<short-base-id>" for
+   * If the user has named the session, produces "<slug>-<short-uuid>" for
    * human-readable grouping whilst remaining unique across same-named sessions.
-   * Otherwise returns the raw base ID.
+   * Otherwise returns just the UUID portion of the session file.
    */
   function buildSessionId(): string | null {
     if (!baseSessionId) return null;
 
+    // For ephemeral sessions, include the full ID
+    if (baseSessionId.startsWith("ephemeral-")) {
+      return baseSessionId;
+    }
+
     const name = pi.getSessionName();
     if (name) {
       const slug = slugify(name);
-      // Session filenames are "<ISO-timestamp>_<uuid>" - extract the UUID portion
-      // for the short ID so we don't bleed timestamp digits/hyphens into the slug.
+      // Extract just the UUID portion from the session filename
       // e.g. "2026-05-06T12-00-00-000Z_019dbbc7-c8c5-748c-8710-3fdf6fefc083"
-      //   -> shortId = "019dbbc7"
+      //   -> "019dbbc7-c8c5-748c-8710-3fdf6fefc083"
       const uuidPart = baseSessionId.split("_")[1] ?? baseSessionId;
-      const shortId = uuidPart.replace(/-/g, "").slice(0, 8);
-      return `${slug}-${shortId}`;
+      const shortUuid = uuidPart.replace(/-/g, "").slice(0, 8);
+      return `${slug}-${shortUuid}`;
     }
 
-    return baseSessionId;
+    // No name set - return just the UUID portion
+    // e.g. "2026-05-08T09-57-45-940Z_019e0705-9153-76ba-8f1d-eedf04d12a09"
+    //   -> "019e0705-9153-76ba-8f1d-eedf04d12a09"
+    return baseSessionId.split("_")[1] ?? baseSessionId;
   }
 
   // Establish the base session ID whenever the session starts, changes, or reloads
@@ -91,7 +98,7 @@ export default function (pi: ExtensionAPI) {
       baseSessionId = `ephemeral-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
     }
 
-    console.log(`[openrouter-session] Ready, base session ID: ${baseSessionId}`);
+    const resolvedSessionId = buildSessionId();
 
     if (ctx.sessionManager.getEntries().length === 0) {
       ctx.ui?.notify("OpenRouter session tracking enabled", "info");
